@@ -70,6 +70,7 @@ def fit_linear_regression(theoretical_complexity, experimental_times):
     model.fit(X, y)
     # Predicted times using regression
     predictions = model.predict(X)
+    # slope (c) is model.coef_[0] and intercept is model.intercept_
     print(
         f"Best fit equation: Time ≈ {model.coef_[0]:.6f} * log(n)*log(log(n)) + {model.intercept_:.6f}")
     return predictions, model.coef_[0], model.intercept_
