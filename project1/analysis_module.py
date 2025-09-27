@@ -1,17 +1,29 @@
+"""
+Filename: analysis_module.py
+Author: jiali liu
+Date: 2025-09-26
+Description: Main module for analyzing time complexity using experimental timing,
+             theoretical modeling, normalization, and regression.
+Version: 1.0
+"""
+
 import time
 import math
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-# Simulate a computational workload and measure
 def analyze_code(n):
+    """
+    Simulate a computational workload and measure
+    """
     # Initialize two arrays of size n+1 filled with 1s
     a = [1] * (n + 1)
     b = [1] * (n + 1)
     Sum = 0
 
-    start_time = time.time()
+    # Start timing in nanoseconds (High Precision)
+    start_time = time.perf_counter_ns()
 
     # Outer loop with non-linear increment
     j = 2
@@ -23,11 +35,15 @@ def analyze_code(n):
             k = k * math.sqrt(k)
         j += j // 2     # This is j = j * 1.5
 
-    end_time = time.time()
+    # End timing in nanoseconds
+    end_time = time.perf_counter_ns()
     return end_time - start_time         # Return elapsed time
 
-# Collect experimental timing and theoretical 
+
 def collect_data(n_values):
+    """
+    Collect experimental timing and theoretical 
+    """
     experimental_times = []
     theoretical_complexity = []
 
@@ -45,24 +61,30 @@ def collect_data(n_values):
             theoretical_val = 0
         theoretical_complexity.append(theoretical_val)
 
-        print(f"n = {n}: Time = {time_taken:.6f}s")
+        print(f"n = {n}: experimental_time = {time_taken:.6f}ns  theoretical_complexity = {theoretical_val:.6f}")
 
     return experimental_times, theoretical_complexity
 
 
-# Normalize theoretical values using the median ratio of experimental to theoretical
 def normalize_with_median_ratio(experimental_times, theoretical_complexity):
+    """
+    Normalize theoretical values using the median ratio of experimental to theoretical
+    """
     # The denominator(theoretical value) cannot be 0
     ratios = [exp / theo for exp,
               theo in zip(experimental_times, theoretical_complexity) if theo > 0]
+    for ratio in ratios:
+        print(f"ratio = {ratio:.6f}")
     scaling_factor = sorted(ratios)[len(ratios) // 2]   # Median ratio
     normalized = [val * scaling_factor for val in theoretical_complexity]
-    print(f"Median scaling factor: {scaling_factor:.2e}")
+    print(f"Median scaling factor: {scaling_factor:.6f}")
     return normalized, scaling_factor
 
 
-# Fit a linear regression model to predict time from theoretical complexity
 def fit_linear_regression(theoretical_complexity, experimental_times):
+    """
+    Fit a linear regression model to predict time from theoretical complexity
+    """
     X = np.array(theoretical_complexity).reshape(-1, 1)      # Reshape for sklearn
     y = np.array(experimental_times)
     # Regression: Fit T(n) ≈ c * log(n)*log(log(n))
@@ -75,18 +97,23 @@ def fit_linear_regression(theoretical_complexity, experimental_times):
         f"Best fit equation: Time ≈ {model.coef_[0]:.6f} * log(n)*log(log(n)) + {model.intercept_:.6f}")
     return predictions, model.coef_[0], model.intercept_
 
-# Print a table comparing experimental and theoretical values
+
 def print_comparison_table(n_values, experimental_times, normalized_median, normalized_regression):
-    print("\nComparison Table:")
+    """
+    Print a table comparing experimental and theoretical values
+    """
+    print("\nComparison Table (ns):")
     print("n\t\tExperimental\tNormalized (Median)\tNormalized (Regression)")
     print("-" * 60)
     for i, n in enumerate(n_values):
         print(
             f"{n}\t\t{experimental_times[i]:.6f}\t{normalized_median[i]:.6f}\t{normalized_regression[i]:.6f}")
 
-# Plot experimental and theoretical values using different scales
+
 def plot_results(n_values, experimental_times, normalized_median, normalized_regression):
-    # Plot results
+    """
+    Plot experimental and theoretical values using different scales
+    """
     plt.figure(figsize=(9, 8))
 
     # Linear scale plot (Median Ratio)
@@ -95,7 +122,7 @@ def plot_results(n_values, experimental_times, normalized_median, normalized_reg
     plt.plot(n_values, normalized_median,
          'ro--', label='Theoretical (Normalized)')
     plt.xlabel('n')
-    plt.ylabel('Time (seconds)')
+    plt.ylabel('Time (nanoseconds)')
     plt.title('Time Complexity: Linear Scale (Median Ratio)')
     plt.legend()
     plt.grid(True)
@@ -106,7 +133,7 @@ def plot_results(n_values, experimental_times, normalized_median, normalized_reg
     plt.semilogx(n_values, normalized_median,
              'ro--', label='Theoretical (Normalized)')
     plt.xlabel('n (log scale)')
-    plt.ylabel('Time (seconds)')
+    plt.ylabel('Time (nanoseconds)')
     plt.title('Time Complexity: Semi-Log Scale (Median Ratio)')
     plt.legend()
     plt.grid(True)
@@ -128,7 +155,7 @@ def plot_results(n_values, experimental_times, normalized_median, normalized_reg
     plt.plot(n_values, normalized_regression,
          'ro--', label='Theoretical (Normalized)')
     plt.xlabel('n')
-    plt.ylabel('Time (seconds)')
+    plt.ylabel('Time (nanoseconds)')
     plt.title('Time Complexity: Linear Scale (Linear Regression)')
     plt.legend()
     plt.grid(True)
@@ -139,7 +166,7 @@ def plot_results(n_values, experimental_times, normalized_median, normalized_reg
     plt.semilogx(n_values, normalized_regression,
              'ro--', label='Theoretical (Normalized)')
     plt.xlabel('n (log scale)')
-    plt.ylabel('Time (seconds)')
+    plt.ylabel('Time (nanoseconds)')
     plt.title('Time Complexity: Semi-Log Scale (Linear Regression)')
     plt.legend()
     plt.grid(True)
@@ -158,8 +185,11 @@ def plot_results(n_values, experimental_times, normalized_median, normalized_reg
     plt.tight_layout()
     plt.show()
 
-# Main function to run the full analysis pipeline
+
 def run_analysis(values):
+    """
+    Main function to run the full analysis pipeline
+    """
     n_values = values
     experimental_times, theoretical_complexity = collect_data(n_values)
     normalized_median, _ = normalize_with_median_ratio(
@@ -175,5 +205,6 @@ def run_analysis(values):
 if __name__ == "__main__":
     # Define input values to test
     inputs = [1000, 5000, 10000, 50000, 100000,
-            500000, 1000000, 5000000, 10000000]
+            500000, 1000000, 5000000, 10000000,
+            50000000, 100000000]
     run_analysis(inputs)
