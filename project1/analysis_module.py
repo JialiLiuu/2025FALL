@@ -15,7 +15,13 @@ from sklearn.linear_model import LinearRegression
 
 def analyze_code(n):
     """
-    Simulate a computational workload and measure
+    Simulates a computational workload with nested non-linear loops.
+
+    Args:
+        n (int): Size parameter controlling loop bounds and array sizes.
+
+    Returns:
+        int: Execution time in nanoseconds.
     """
     # Initialize two arrays of size n+1 filled with 1s
     a = [1] * (n + 1)
@@ -42,7 +48,15 @@ def analyze_code(n):
 
 def collect_data(n_values):
     """
-    Collect experimental timing and theoretical 
+    Collects experimental execution times and theoretical complexity values.
+
+    Args:
+        n_values (list of int): List of input sizes to test.
+
+    Returns:
+        tuple: (list of int, list of float)
+            - Experimental execution times in nanoseconds.
+            - Corresponding theoretical complexity values.
     """
     experimental_times = []
     theoretical_complexity = []
@@ -68,7 +82,13 @@ def collect_data(n_values):
 
 def normalize_with_median_ratio(experimental_times, theoretical_complexity):
     """
-    Normalize theoretical values using the median ratio of experimental to theoretical
+    Normalizes theoretical complexity values using the median ratio of
+    experimental to theoretical values.
+
+    Returns:
+        tuple: (list of float, float)
+            - Normalized theoretical values.
+            - Median scaling factor used for normalization.
     """
     # The denominator(theoretical value) cannot be 0
     ratios = [exp / theo for exp,
@@ -83,7 +103,13 @@ def normalize_with_median_ratio(experimental_times, theoretical_complexity):
 
 def fit_linear_regression(theoretical_complexity, experimental_times):
     """
-    Fit a linear regression model to predict time from theoretical complexity
+    Fits a linear regression model to predict execution time from theoretical complexity.
+
+    Returns:
+        tuple: (list of float, float, float)
+            - Predicted execution times.
+            - Regression coefficient (slope).
+            - Regression intercept.
     """
     X = np.array(theoretical_complexity).reshape(-1, 1)      # Reshape for sklearn
     y = np.array(experimental_times)
@@ -100,7 +126,7 @@ def fit_linear_regression(theoretical_complexity, experimental_times):
 
 def print_comparison_table(n_values, experimental_times, normalized_median, normalized_regression):
     """
-    Print a table comparing experimental and theoretical values
+    Prints a formatted comparison table of experimental and normalized theoretical values.
     """
     print("\nComparison Table (ns):")
     print("n\t\tExperimental\tNormalized (Median)\tNormalized (Regression)")
@@ -112,7 +138,7 @@ def print_comparison_table(n_values, experimental_times, normalized_median, norm
 
 def plot_results(n_values, experimental_times, normalized_median, normalized_regression):
     """
-    Plot experimental and theoretical values using different scales
+    Plots experimental and theoretical values using various scales.
     """
     plt.figure(figsize=(9, 8))
 
@@ -188,7 +214,7 @@ def plot_results(n_values, experimental_times, normalized_median, normalized_reg
 
 def run_analysis(values):
     """
-    Main function to run the full analysis pipeline
+    Runs the full analysis pipeline: data collection, normalization, regression, comparison, and visualization.
     """
     n_values = values
     experimental_times, theoretical_complexity = collect_data(n_values)
