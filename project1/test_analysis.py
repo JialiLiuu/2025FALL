@@ -28,8 +28,8 @@ class TestAnalysisFunctions(unittest.TestCase):
         """
         for n in self.n_values:
             result = analyze_code(n)
-            # Check that the result is a float
-            self.assertIsInstance(result, float)
+            # Check that the result is an integer 
+            self.assertIsInstance(result, int)
             # Check that the result is not negative
             self.assertGreaterEqual(result, 0)
 
@@ -41,9 +41,9 @@ class TestAnalysisFunctions(unittest.TestCase):
         # Ensure both lists match the length of input n_values
         self.assertEqual(len(experimental), len(self.n_values))
         self.assertEqual(len(theoretical), len(self.n_values))
-        # Check that all values in experimental are floats
+        # Check that all values in experimental are integers
         for t in experimental:
-            self.assertIsInstance(t, float)
+            self.assertIsInstance(t, int)
         # Check that all values in theoretical are floats
         for c in theoretical:
             self.assertIsInstance(c, float)
