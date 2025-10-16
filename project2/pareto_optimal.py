@@ -1,6 +1,11 @@
-import matplotlib.pyplot as plt
-import random
-
+"""
+Filename: pareto_optimal.py
+Author: jiali liu
+Date: 2025-10-15
+Description: 
+This module implements two algorithms for computing the Pareto-optimal set (also known as the staircase) from a list of 2D points. 
+A point is Pareto-optimal if no other point dominates it in both dimensions.
+"""
 def staircase_oh_nh(points):
     """
     Computes Pareto-optimal points in O(nh) time
@@ -10,7 +15,7 @@ def staircase_oh_nh(points):
         return []
     
     # Sort points by x-coordinate in descending order
-    # (so we process from rightmost to leftmost)
+    # (so process from rightmost to leftmost)
     points_sorted = sorted(points, key=lambda p: (-p[0], -p[1]))
     
     staircase = []
@@ -85,43 +90,3 @@ def staircase_dc_optimized(points):
     staircase = recursive_helper(points_sorted)
     
     return staircase
-    
-def plot_staircase_comparison(n_values):
-    plt.figure(figsize=(14, 8))
-    
-    for i, n in enumerate(n_values, start=1):
-        
-        # This ensures that for each value of n, the random points generated are reproducible
-        random.seed(45 + n)
-        points = [(random.uniform(0, 1000), random.uniform(0, 1000)) for _ in range(n)]
-        
-        # Compute staircases
-        stair_oh_nh = staircase_oh_nh(points.copy())
-        stair_dc = staircase_dc_optimized(points.copy())
-        
-        # Subplot
-        plt.subplot(2, (len(n_values) + 1) // 2, i)
-        plt.scatter([p[0] for p in points], [p[1] for p in points],
-                    color='gray', alpha=0.5, label='All Points', s=10)
-        
-        plt.plot([p[0] for p in stair_oh_nh], [p[1] for p in stair_oh_nh],
-                 'bo-', linewidth=1.2, markersize=4, label='Iterative: O(nh)')
-        
-        plt.plot([p[0] for p in stair_dc], [p[1] for p in stair_dc],
-                 'ro--', linewidth=1.2, markersize=4, label='Divide & Conquer: O(n log n)')
-        
-        plt.title(f'n = {n} points')
-        plt.xlabel('x')
-        plt.ylabel('y')
-        plt.grid(True)
-        plt.legend(fontsize=8)
-    
-    plt.suptitle('Visual Comparison of Staircase Algorithms for Different Input Sizes', fontsize=14, weight='bold')
-    plt.tight_layout(rect=[0, 0, 1, 0.96])
-    plt.show()
-
-# ---------------------------
-# Run visualization
-# ---------------------------
-n_values = [100, 200, 400, 800, 1600, 3200]
-plot_staircase_comparison(n_values)
