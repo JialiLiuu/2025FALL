@@ -33,3 +33,24 @@ Provides benchmarking and visualization tools:
 2. Install required dependencies:
    ```bash
    pip install matplotlib
+3. Run the analysis:
+   ```bash
+   python analysis_module.py
+   ```
+This will generate visual comparisons of the algorithms and print performance metrics to the console.
+
+---
+
+## Dependencies
+
+- Python 3.x
+- matplotlib
+
+
+---
+
+## Example Output
+
+- Visual comparison of Pareto staircases for increasing input sizes.
+- Performance graphs (linear and log-log scale).
+- Comparison table of experimental vs. theoretical time complexities.
