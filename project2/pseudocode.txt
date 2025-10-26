@@ -17,26 +17,28 @@ Function staircase_oh_nh(points):
     Sort staircase by x in ascending order
     Return staircase
 
-Function staircase_dc_optimized(points):
+Function staircase_nlogh(points):
     If points is empty:
         Return empty list
+    Sort points in descending order by x (and y for tie-breaker)
+    Initialize staircase as empty list
+    For each point in sorted points:
+        Use binary search to find insertion position in staircase
+        Check if point is dominated by any point in staircase:
+            If dominated:
+                Continue to next point
+        Insert point into staircase at correct position
+        Remove any points in staircase that are now dominated
+    Sort staircase by x ascending for final output
+    Return staircase
 
-    Sort points in ascending order by x
-
-    Define recursive_helper(subset):
-        If subset has only one point:
-            Return subset
-            
-        Split subset into left_half and right_half
-        left_staircase = recursive_helper(left_half)
-        right_staircase = recursive_helper(right_half)
-        Return merge_staircases(left_staircase, right_staircase)
-        
-    Define merge_staircases(left, right):
-        max_y_right = maximum y among points in right
-        filtered_left = []
-        For each point in left:
-            If point.y > max_y_right:
-                Add point to filtered_left
-        Return filtered_left + right
-    Return recursive_helper(sorted points)
+Function staircase_presorted(points):
+    If points is empty:
+        Return empty list
+    Assume points are sorted by x ascending
+    Initialize staircase as empty list
+    For each point in points:
+        While staircase is not empty AND last point in staircase has y <= current point.y:
+            Remove last point from staircase (it is dominated)
+        Add current point to staircase
+    Return staircase

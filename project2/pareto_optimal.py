@@ -1,10 +1,10 @@
 """
 Filename: pareto_optimal.py
 Author: jiali liu
-Date: 2025-10-15
+Date: 2025-10-25
 Description: 
-This module implements two algorithms for computing the Pareto-optimal set (also known as the staircase) from a list of 2D points. 
-A point is Pareto-optimal if no other point dominates it in both dimensions.
+This module implements multiple algorithms for computing the Pareto-optimal set (also known as the staircase) from a list of 2D points.
+A point is Pareto-optimal if no other point dominates it in both dimensions (x and y).
 """
 def staircase_oh_nh(points):
     """
@@ -89,4 +89,60 @@ def staircase_dc_optimized(points):
     # Compute the staircase recursively
     staircase = recursive_helper(points_sorted)
     
+    return staircase
+
+import bisect
+
+def staircase_nlogh(points):
+    """
+    Computes Pareto-optimal points in O(n log h) time,
+    where h = number of Pareto-optimal points.
+
+    Approach:
+    - Sort points by x descending (and y descending for tie-breaker).
+    - Maintain a staircase list sorted by x.
+    - Use binary search for insertion and dominance checks.
+    """
+    if not points:
+        return []
+
+    # Sort points by x descending, y descending
+    points_sorted = sorted(points, key=lambda p: (-p[0], -p[1]))
+
+    staircase = []
+
+    for point in points_sorted:
+        # Binary search for insertion position
+        idx = bisect.bisect_left(staircase, point)
+
+        # Check if point is dominated by any existing point
+        dominated = False
+        for stair_point in staircase:
+            if stair_point[0] >= point[0] and stair_point[1] >= point[1]:
+                dominated = True
+                break
+
+        if not dominated:
+            staircase.insert(idx, point)
+
+    # Sort staircase by x ascending for final output
+    staircase.sort(key=lambda p: p[0])
+    return staircase
+
+def staircase_presorted(points):
+    """
+    Computes Pareto-optimal points in O(n) time,
+    assuming points are sorted by x ascending.
+    Removes previously dominated points.
+    """
+    if not points:
+        return []
+
+    staircase = []
+    for point in points:
+        # Remove points dominated by the new point
+        while staircase and staircase[-1][1] <= point[1]:
+            staircase.pop()
+        staircase.append(point)
+
     return staircase
