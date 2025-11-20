@@ -1,0 +1,26 @@
+function DFS_Maze(maze):
+    H, W = dimensions of maze
+    start = (0, 0)
+    target = (H-1, W-1)
+
+    stack = [start]
+    visited = {start}
+    parent = {start: None}
+
+    while stack is not empty:
+        (r, c) = stack.pop()
+        if (r, c) == target:
+            break
+        for each (nr, nc) in get_neighbors(r, c):
+            if (nr, nc) not in visited:
+                visited.add((nr, nc))
+                parent[(nr, nc)] = (r, c)
+                stack.push((nr, nc))
+
+    path = []
+    cur = target
+    while cur is not None:
+        path.append(cur)
+        cur = parent[cur]
+    reverse(path)
+    return path
