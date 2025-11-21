@@ -1,26 +1,72 @@
-function DFS_Maze(maze):
-    H, W = dimensions of maze
-    start = (0, 0)
-    target = (H-1, W-1)
+Algorithm DFS_Maze_Solver(maze):
 
-    stack = [start]
-    visited = {start}
-    parent = {start: None}
+```
+Input:
+    maze – a 2D character array representing the ASCII maze
 
-    while stack is not empty:
-        (r, c) = stack.pop()
-        if (r, c) == target:
-            break
-        for each (nr, nc) in get_neighbors(r, c):
-            if (nr, nc) not in visited:
-                visited.add((nr, nc))
-                parent[(nr, nc)] = (r, c)
-                stack.push((nr, nc))
+Step 1 – Extract maze dimensions:
+    H ← number of logical cell rows
+    W ← number of logical cell columns
 
-    path = []
-    cur = target
-    while cur is not None:
-        path.append(cur)
-        cur = parent[cur]
-    reverse(path)
-    return path
+Step 2 – Set start and goal positions:
+    start  ← (0, 0)
+    target ← (H − 1, W − 1)
+
+Step 3 – Initialize data structures:
+    stack   ← empty stack
+    visited ← empty set
+    parent  ← empty map
+
+    Push start onto stack
+    Mark start as visited
+    parent[start] ← None
+
+Step 4 – Depth-First Search:
+    While stack is not empty:
+
+        (r, c) ← stack.pop()
+
+        If (r, c) = target:
+            Break search
+
+        For each neighbor (nr, nc) in Get_Neighbors(r, c, maze):
+            If (nr, nc) not in visited:
+                Mark (nr, nc) as visited
+                parent[(nr, nc)] ← (r, c)
+                Push (nr, nc) onto stack
+
+Step 5 – Reconstruct Path:
+    path ← empty list
+    current ← target
+
+    While current is not None:
+        Append current to path
+        current ← parent[current]
+
+    Reverse path
+    Return path
+```
+
+Function Get_Neighbors(r, c, maze):
+
+```
+neighbors ← empty list
+
+-- Check Right:
+If the ASCII wall symbols to the right indicate open space:
+    neighbors.append(r, c + 1)
+
+-- Check Down:
+If the characters below the cell are space:
+    neighbors.append(r + 1, c)
+
+-- Check Left:
+If the ASCII wall symbols to the left indicate open space:
+    neighbors.append(r, c − 1)
+
+-- Check Up:
+If the characters above the cell are space:
+    neighbors.append(r − 1, c)
+
+Return neighbors
+```
